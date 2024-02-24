@@ -33,5 +33,5 @@ jobs:
           fi
 
       - name: Commit and Push changes
-        if: success()  # Solo se ejecutará si el paso anterior tiene éxito
+        if: ${{ failure() != true }}
         uses: stefanzweifel/git-auto-commit-action@v5
