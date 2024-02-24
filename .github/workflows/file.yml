@@ -20,11 +20,9 @@ jobs:
         with:
           python-version: '3.12'
           
-      - name: Run script
-        run: python ./example.py
-
       - name: Validate file creation
         run: |
+          python ./example.py
           if [ -f "file.txt" ]; then
             echo "file.txt exists"
           else
