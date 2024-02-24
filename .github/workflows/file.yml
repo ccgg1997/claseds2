@@ -31,7 +31,3 @@ jobs:
             echo "file.txt does not exist"
             exit 1
           fi
-
-      - name: Commit and Push changes
-        if: ${{ failure() != true }}
-        uses: stefanzweifel/git-auto-commit-action@v5
