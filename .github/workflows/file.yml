@@ -1,0 +1,40 @@
+name: file
+
+on: 
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          
+      - name: Run script
+        run: python ./example.py
+
+      - name: Validate file creation
+        run: |
+          if [ -f "file.txt" ]; then
+            echo "file.txt exists"
+          else
+            echo "file.txt does not exist"
+            exit 1
+          fi
+
+      - name: Commit and Push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+
+      
+      
+    
