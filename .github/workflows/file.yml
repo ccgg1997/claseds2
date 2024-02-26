@@ -30,3 +30,11 @@ jobs:
             echo "file.txt does not exist"
             exit 1
           fi
+
+      - name: Assign random reviewers
+        run: |
+          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          REVIEWERS=$(curl -s "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/requested_reviewers" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | jq '.[] | .login' | shuf | head -n 2)
+          for reviewer in $REVIEWERS; do
+            curl -X POST -d "{\"reviewers\": [\"$reviewer\"]}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/requested_reviewers"
+          done
