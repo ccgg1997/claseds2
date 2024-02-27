@@ -31,10 +31,16 @@ jobs:
             exit 1
           fi
 
-      - name: Assign random reviewers
+      - name: Create Pull Request and Assign Reviewers
+        if: github.event_name == 'push'  # Asegurarse de que solo se ejecute en caso de un push
         run: |
-          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-          REVIEWERS=$(curl -s "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/requested_reviewers" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | jq '.[] | .login' | shuf | head -n 2)
+          PR_BRANCH="auto-pr-$(date +%s)"  # Generar un nombre único para la nueva rama del PR
+          PR_URL=$(curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -d "{\"title\":\"Automatic Reviewers\",\"body\":\"This PR has been automatically assigned reviewers.\",\"head\":\"$PR_BRANCH\",\"base\":\"main\"}" "https://api.github.com/repos/${{ github.repository }}/pulls" | jq -r '.url')
+
+          # Obtener los revisores aleatorios
+          REVIEWERS=$(curl -s "https://api.github.com/repos/${{ github.repository }}/collaborators" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" | jq -r '.[].login' | shuf | head -n 2)
+
+          # Asignar los revisores al PR
           for reviewer in $REVIEWERS; do
-            curl -X POST -d "{\"reviewers\": [\"$reviewer\"]}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/requested_reviewers"
+            curl -X POST -d "{\"reviewers\": [\"$reviewer\"]}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" "$PR_URL/requested_reviewers"
           done
