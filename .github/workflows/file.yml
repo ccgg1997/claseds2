@@ -1,14 +1,14 @@
 name: file
 
-on: 
+on:
   push:
     branches:
-      '*'
+      - '*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: write
 
@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          
+
       - name: Validate file creation
         run: |
           python ./example.py
@@ -28,35 +28,46 @@ jobs:
             echo "file.txt exists"
           else
             echo "file.txt does not exist"
-            exit 1
+            echo "**Validation failed. Skipping PR creation and reviewer assignment.**"
+            exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
           fi
-      - name: Set up environment variables
-        run: |
-          echo "GH_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
-          
-      - name: Install GitHub CLI
-        run: |
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
-          sudo apt-add-repository https://cli.github.com/packages
-          sudo apt update
-          sudo apt install gh -y
 
-      - name: Create Pull Request and Assign Reviewers
+      - name: Install GitHub CLI (if not already installed)
         run: |
-          # Obtener el nombre de la rama
+          if ! which gh >/dev/null 2>&1; then
+            sudo apt update && sudo apt install -y curl gnupg2
+            curl -sSL https://cli.github.com/packages/scripts/ubuntu-jammy.sh | sudo bash -s -
+          fi
+
+      - name: Create Pull Request
+        run: |
+          # Obtain the name of the branch
           BRANCH=$(git rev-parse --abbrev-ref HEAD)
           
-          # Crear el Pull Request
+          # Create the Pull Request
           gh pr create --title "Automated PR from $BRANCH" --base main
-          
-          # Obtener una lista de colaboradores
+
+      - name: Get Collaborators
+        run: |
           COLLABORATORS=$(gh api repos/${{ github.repository }}/collaborators | jq -r '.[].login')
-          
-          # Seleccionar dos revisores aleatorios de la lista de colaboradores
+
+      - name: Select Random Reviewers
+        run: |
+          # Select two random reviewers from the list of collaborators
           REVIEWERS=($(shuf -e $COLLABORATORS | head -n 2))
-          
-          # Asignar los revisores al PR
+
+      - name: Assign Reviewers
+        run: |
           PR_NUMBER=$(gh pr list | head -n 1 | awk '{print $1}')
           for reviewer in "${REVIEWERS[@]}"; do
             gh pr review-request create --reviewer $reviewer --requestee ${{ github.actor }} --repo ${{ github.repository }} --number $PR_NUMBER
-          done     
+          done
+
+      - name: Post Checkout repo
+        run: echo "Checkout completed successfully"
+
+      - name: Post Setup python
+        run: echo "Python setup completed successfully"
+
+      - name: Complete job
+        run: echo "Job completed successfully"
