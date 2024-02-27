@@ -30,6 +30,16 @@ jobs:
             echo "file.txt does not exist"
             exit 1
           fi
+       - name: Set up environment variables
+        run: |
+          echo "GH_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt update
+          sudo apt install gh -y
 
       - name: Create Pull Request and Assign Reviewers
         run: |
@@ -49,4 +59,4 @@ jobs:
           PR_NUMBER=$(gh pr list | head -n 1 | awk '{print $1}')
           for reviewer in "${REVIEWERS[@]}"; do
             gh pr review-request create --reviewer $reviewer --requestee ${{ github.actor }} --repo ${{ github.repository }} --number $PR_NUMBER
-          done
+          done     
