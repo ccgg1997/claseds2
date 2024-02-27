@@ -32,42 +32,12 @@ jobs:
             exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
           fi
 
-      - name: Install GitHub CLI (if not already installed)
-        run: |
-          if ! which gh >/dev/null 2>&1; then
-            sudo apt update && sudo apt install -y curl gnupg2
-            curl -sSL https://cli.github.com/packages/scripts/ubuntu-jammy.sh | sudo bash -s -
-          fi
+      - name: Open PR
+        id: open_pr
+        uses: rematocorp/open-pull-request-action@v1
 
-      - name: Create Pull Request
-        run: |
-          # Obtain the name of the branch
-          BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          
-          # Create the Pull Request
-          gh pr create --title "Automated PR from $BRANCH" --base main
-
-      - name: Get Collaborators
-        run: |
-          COLLABORATORS=$(gh api repos/${{ github.repository }}/collaborators | jq -r '.[].login')
-
-      - name: Select Random Reviewers
-        run: |
-          # Select two random reviewers from the list of collaborators
-          REVIEWERS=($(shuf -e $COLLABORATORS | head -n 2))
-
-      - name: Assign Reviewers
-        run: |
-          PR_NUMBER=$(gh pr list | head -n 1 | awk '{print $1}')
-          for reviewer in "${REVIEWERS[@]}"; do
-            gh pr review-request create --reviewer $reviewer --requestee ${{ github.actor }} --repo ${{ github.repository }} --number $PR_NUMBER
-          done
-
-      - name: Post Checkout repo
-        run: echo "Checkout completed successfully"
-
-      - name: Post Setup python
-        run: echo "Python setup completed successfully"
-
-      - name: Complete job
-        run: echo "Job completed successfully"
+      -  name: Add Automatic Pull Request Reviewers
+         uses: buzato/add-reviewer-gh-action@1.0.5
+         with: 
+          reviewers: "AveryCameronUofR"
+          token: ${{ secrets.GITHUB_TOKEN }}
