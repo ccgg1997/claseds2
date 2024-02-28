@@ -32,8 +32,12 @@ jobs:
             exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
           fi
 
-      - name: Create PR to branch
-        uses: gorillio/github-action-cherry-pick@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+      - name: Open PR
+        id: open_pr
+        uses: rematocorp/open-pull-request-action@v1
 
+      -  name: Add Automatic Pull Request Reviewers
+         uses: buzato/add-reviewer-gh-action@1.0.5
+         with: 
+          reviewers: "Maik2805"
+          token: ${{ secrets.GITHUB_TOKEN }}
