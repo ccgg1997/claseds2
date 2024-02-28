@@ -35,5 +35,5 @@ jobs:
       - name: Create PR to branch
         uses: gorillio/github-action-cherry-pick@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
 
