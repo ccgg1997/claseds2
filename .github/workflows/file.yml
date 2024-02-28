@@ -42,23 +42,27 @@ jobs:
       #     branch: main
       #     base: develop
       - name: Create Pull Request
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6  # Use v6 for better compatibility
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const ghb = require('@actions/github');
-            const cont= ghb.context;
-            const octokit = ghb.getOctokit(process.env.GITHUB_TOKEN);
-            const { owner, repo } = cont.repo;
-            const pullRequest = await octokit.rest.pulls.create({
-              owner,
-              repo,
-              title: "Automated Pull Request",
-              body: "This pull request was automatically created upon pushing changes to the repository.",
-              head: "develop",  // La rama desde la que quieres solicitar la extracción
-              base: "main"      // La rama base a la que quieres solicitar la extracción
-            });
-            console.log(`Pull request created: ${pullRequest.data.html_url}`);
+            const github = require('@actions/github');
+            const { owner, repo } = context.repo;  # Correctly access context
+            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            try {
+              const pullRequest = await octokit.rest.pulls.create({
+                owner,
+                repo,
+                title: "Automated Pull Request",
+                body: "This pull request was automatically created upon pushing changes to the repository.",
+                head: "develop",
+                base: "main"
+              });
+              console.log(`Pull request created: ${pullRequest.data.html_url}`);
+            } catch (error) {
+              console.error('Error creating pull request:', error);
+              // Add more robust error handling if needed
+            }
 
       -  name: Add Automatic Pull Request Reviewers
          uses: buzato/add-reviewer-gh-action@1.0.5
