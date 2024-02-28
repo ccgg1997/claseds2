@@ -32,16 +32,34 @@ jobs:
             exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
           fi
 
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v3
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     commit-message: "Automatically created pull request"
+      #     title: "Automated Pull Request"
+      #     body: "This pull request was automatically created upon pushing changes to the repository."
+      #     branch: main
+      #     base: develop
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: actions/github-script@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Automatically created pull request"
-          title: "Automated Pull Request"
-          body: "This pull request was automatically created upon pushing changes to the repository."
-          branch: main
-          base: develop
-          
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const github = require('@actions/github');
+            const context = github.context;
+            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            const { owner, repo } = context.repo;
+            const pullRequest = await octokit.rest.pulls.create({
+              owner,
+              repo,
+              title: "Automated Pull Request",
+              body: "This pull request was automatically created upon pushing changes to the repository.",
+              head: "develop",  // La rama desde la que quieres solicitar la extracción
+              base: "main"      // La rama base a la que quieres solicitar la extracción
+            });
+            console.log(`Pull request created: ${pullRequest.data.html_url}`);
+            
       -  name: Add Automatic Pull Request Reviewers
          uses: buzato/add-reviewer-gh-action@1.0.5
          with: 
