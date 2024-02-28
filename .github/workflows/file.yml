@@ -33,7 +33,7 @@ jobs:
           fi
 
       - name: Create PR to branch
-      uses: gorillio/github-action-cherry-pick@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: gorillio/github-action-cherry-pick@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
