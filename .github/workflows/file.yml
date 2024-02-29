@@ -41,28 +41,54 @@ jobs:
       #     body: "This pull request was automatically created upon pushing changes to the repository."
       #     branch: main
       #     base: develop
+      # - name: Create Pull Request
+      #   uses: actions/github-script@v6  # Use v6 for better compatibility
+      #   with:
+      #     github-token: ${{ secrets.REPO_TOKEN }}
+      #     script: |
+      #       const ghb = require('@actions/github');
+      #       const { owner, repo } = context.repo;  # Correctly access context
+      #       const octokit = ghb.getOctokit(process.env.REPO_TOKEN);
+      #       try {
+      #         const pullRequest = await octokit.rest.pulls.create({
+      #           owner,
+      #           repo,
+      #           title: "Automated Pull Request",
+      #           body: "This pull request was automatically created upon pushing changes to the repository.",
+      #           head: "develop",
+      #           base: "main"
+      #         });
+      #         console.log(`Pull request created: ${pullRequest.data.html_url}`);
+      #       } catch (error) {
+      #         console.error('Error creating pull request:', error);
+      #         // Add more robust error handling if needed
+      #       }
       - name: Create Pull Request
         uses: actions/github-script@v6  # Use v6 for better compatibility
         with:
           github-token: ${{ secrets.REPO_TOKEN }}
           script: |
             const ghb = require('@actions/github');
-            const { owner, repo } = context.repo;  # Correctly access context
+            const { owner, repo } = context.repo;  // Correctly access context
             const octokit = ghb.getOctokit(process.env.REPO_TOKEN);
-            try {
-              const pullRequest = await octokit.rest.pulls.create({
-                owner,
-                repo,
-                title: "Automated Pull Request",
-                body: "This pull request was automatically created upon pushing changes to the repository.",
-                head: "develop",
-                base: "main"
-              });
-              console.log(`Pull request created: ${pullRequest.data.html_url}`);
-            } catch (error) {
-              console.error('Error creating pull request:', error);
-              // Add more robust error handling if needed
-            }
+
+            // Wrap the script in an async function
+            (async () => {
+              try {
+                const pullRequest = await octokit.rest.pulls.create({
+                  owner,
+                  repo,
+                  title: "Automated Pull Request",
+                  body: "This pull request was automatically created upon pushing changes to the repository.",
+                  head: "develop",
+                  base: "main"
+                });
+                console.log(`Pull request created: ${pullRequest.data.html_url}`);
+              } catch (error) {
+                console.error('Error creating pull request:', error);
+                // Add more robust error handling if needed
+              }
+            })();
 
       -  name: Add Automatic Pull Request Reviewers
          uses: buzato/add-reviewer-gh-action@1.0.5
