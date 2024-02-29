@@ -68,6 +68,7 @@ jobs:
       #         // Add more robust error handling if needed
       #       }
       - name: Crear Pull Request
+        id: create_pr
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/${{ env.OWNER }}/${{ env.REPO }}/pulls
@@ -86,3 +87,4 @@ jobs:
         with:
           reviewers: "Maik2805"
           token: ${{ secrets.REPO_TOKEN }}
+          pr_number: ${{ steps.create_pr.outputs.data.number }}
