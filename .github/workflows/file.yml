@@ -78,13 +78,8 @@ jobs:
           body: |
             This pull request was automatically created upon pushing changes to the repository.
 
-      - name: Esperar a que se cree el Pull Request
-        uses: tzkhan/wait-for-pull-request@v1
-        with:
-          github-token: ${{ secrets.REPO_TOKEN }}
-          repo-token: ${{ secrets.REPO_TOKEN }}
-          branch: develop
-          wait-for: 'created'
+      - name: Esperar 10 segundos
+        run: sleep 10s
 
       - name: Añadir Revisores al Pull Request
         uses: buzato/add-reviewer-gh-action@1.0.5
