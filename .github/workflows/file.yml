@@ -11,6 +11,10 @@ jobs:
 
     permissions:
       contents: write
+      
+    env:
+      OWNER: ${{ github.repository_owner }}
+      REPO: ${{ github.event.repository.name }}
 
     steps:
       - name: Checkout repo
@@ -63,12 +67,6 @@ jobs:
       #         console.error('Error creating pull request:', error);
       #         // Add more robust error handling if needed
       #       }
-      - name: Setear Contexto
-        id: set_context
-        run: |
-          echo "::set-env name=OWNER::$(echo $GITHUB_REPOSITORY | cut -d'/' -f1)"
-          echo "::set-env name=REPO::$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)"
-
       - name: Crear Pull Request
         uses: octokit/request-action@v2.x
         with:
