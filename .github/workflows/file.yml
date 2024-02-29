@@ -78,8 +78,8 @@ jobs:
           base: main
           body: |
             This pull request was automatically created upon pushing changes to the repository.
-            
-       - name: Asignar Revisores
+
+      - name: Asignar Revisores
         uses: reviewdog/action-github-pr-review@v1
         with:
           github_token: ${{ secrets.REPO_TOKEN }}
