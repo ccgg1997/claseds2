@@ -90,4 +90,4 @@ jobs:
             -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{"reviewers":["Maik2805"]}' \
-            "https://api.github.com/repos/${{ env.OWNER }}/${{ env.REPO }}/pulls/${pr_number}}/requested_reviewers"
+            "https://api.github.com/repos/${{ env.OWNER }}/${{ env.REPO }}/pulls/${pr_number}/requested_reviewers"
