@@ -63,32 +63,22 @@ jobs:
       #         console.error('Error creating pull request:', error);
       #         // Add more robust error handling if needed
       #       }
-      - name: Create Pull Request
-        uses: actions/github-script@v6  # Use v6 for better compatibility
-        with:
-          github-token: ${{ secrets.REPO_TOKEN }}
-          script: |
-            const ghb = require('@actions/github');
-            const { owner, repo } = context.repo;  // Correctly access context
-            const octokit = ghb.getOctokit(process.env.REPO_TOKEN);
+      - name: Setear Contexto
+        id: set_context
+        run: |
+          echo "::set-env name=OWNER::$(echo $GITHUB_REPOSITORY | cut -d'/' -f1)"
+          echo "::set-env name=REPO::$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)"
 
-            // Wrap the script in an async function
-            (async () => {
-              try {
-                const pullRequest = await octokit.rest.pulls.create({
-                  owner,
-                  repo,
-                  title: "Automated Pull Request",
-                  body: "This pull request was automatically created upon pushing changes to the repository.",
-                  head: "develop",
-                  base: "main"
-                });
-                console.log(`Pull request created: ${pullRequest.data.html_url}`);
-              } catch (error) {
-                console.error('Error creating pull request:', error);
-                // Add more robust error handling if needed
-              }
-            })();
+      - name: Crear Pull Request
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/${{ env.OWNER }}/${{ env.REPO }}/pulls
+          token: ${{ secrets.REPO_TOKEN }}
+          title: Automated Pull Request
+          head: develop
+          base: main
+          body: |
+            This pull request was automatically created upon pushing changes to the repository.
 
       -  name: Add Automatic Pull Request Reviewers
          uses: buzato/add-reviewer-gh-action@1.0.5
