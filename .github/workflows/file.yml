@@ -78,4 +78,12 @@ jobs:
           base: main
           body: |
             This pull request was automatically created upon pushing changes to the repository.
-          reviewers: Maik2805
+            
+       - name: Asignar Revisores
+        uses: reviewdog/action-github-pr-review@v1
+        with:
+          github_token: ${{ secrets.REPO_TOKEN }}
+          level: info
+          tool_name: assign-reviewer
+          check_name: Assign Reviewer
+          reviewdog_flags: -assign "Maik2805"
