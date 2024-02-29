@@ -79,11 +79,15 @@ jobs:
           body: |
             This pull request was automatically created upon pushing changes to the repository.
 
+      - name: Obtener número de Pull Request
+        id: pr_number
+        run: echo "::set-output name=pr_number::$(echo "${{ steps.create_pr.outputs.data }}" | jq -r '.number')"
+
       - name: Asignar Revisores
-        uses: reviewdog/action-github-pr-review@v1
-        with:
-          github_token: ${{ secrets.REPO_TOKEN }}
-          level: info
-          tool_name: assign-reviewer
-          check_name: Assign Reviewer
-          reviewdog_flags: -assign "Maik2805"
+        run: |
+          pr_number=${{ steps.pr_number.outputs.pr_number }}
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"reviewers":["Maik2805"]}' \
+            "https://api.github.com/repos/${{ env.OWNER }}/${{ env.REPO }}/pulls/${pr_number}}/requested_reviewers"
