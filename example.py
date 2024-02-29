@@ -9,4 +9,5 @@ with open("file"".txt", "w") as file:
         #create a file and write to it
         print("hello world4")
         print("hello world5")
+        print("hello world6")
         file.write("This is line %d\n" % (i+1))
