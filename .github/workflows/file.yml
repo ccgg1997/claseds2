@@ -78,13 +78,4 @@ jobs:
           base: main
           body: |
             This pull request was automatically created upon pushing changes to the repository.
-
-      - name: Esperar 10 segundos
-        run: sleep 10s
-
-      - name: Añadir Revisores al Pull Request
-        uses: buzato/add-reviewer-gh-action@1.0.5
-        with:
-          reviewers: "Maik2805"
-          token: ${{ secrets.REPO_TOKEN }}
-          pr_number: ${{ steps.create_pr.outputs.data.number }}
+          reviewers: Maik2805
