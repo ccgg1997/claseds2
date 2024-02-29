@@ -80,7 +80,7 @@ jobs:
             This pull request was automatically created upon pushing changes to the repository.
 
       - name: Extraer número de Pull Request
-        run: echo "${{ steps.create_pr.outputs.data }}" | jq -r '.number' > pr_number.txt
+        run: echo "${{ steps.create_pr.outputs.data }}"
 
       - name: Asignar Revisor
         run: |
