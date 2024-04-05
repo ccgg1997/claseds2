@@ -55,10 +55,11 @@ jobs:
         #   tool_name: assign-reviewer
         #   check_name: Assign Reviewer
         #   reviewdog_flags: -assign "Maik2805"
+
       - name: Get repository collaborators
         id: collaborators
         run: |
-          collaborators=$(gh api repos/:owner/:repo/collaborators -q '.[].login')
+          collaborators=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/:owner/:repo/collaborators?per_page=100" | jq -r '.[].login')
           echo "::set-output name=collaborators::$collaborators"
 
       - name: Select random reviewer
@@ -70,7 +71,7 @@ jobs:
           echo "::set-output name=random_reviewer::$random_reviewer"
 
       - name: Assign Random Reviewer
-        uses: actions/review-assign-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          reviewers: ${{ steps.random_reviewer.outputs.random_reviewer }}
+        run: |
+          gh pr request-review --reviewer ${{ steps.random_reviewer.outputs.random_reviewer }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
