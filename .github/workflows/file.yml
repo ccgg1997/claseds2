@@ -35,7 +35,7 @@ jobs:
             echo "**Validation failed. Skipping PR creation and reviewer assignment.**"
             exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
           fi
-
+          
       - name: Crear Pull Request
         id: create_pr
         uses: octokit/request-action@v2.x
@@ -48,30 +48,11 @@ jobs:
           body: |
             This pull request was automatically created upon pushing changes to the repository.
             
-        # uses: reviewdog/action-github-pr-review@v1
-        # with:
-        #   github_token: ${{ secrets.REPO_TOKEN }}
-        #   level: info
-        #   tool_name: assign-reviewer
-        #   check_name: Assign Reviewer
-        #   reviewdog_flags: -assign "Maik2805"
-
-      - name: Get repository collaborators
-        id: collaborators
-        run: |
-          collaborators=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/:owner/:repo/collaborators?per_page=100" | jq -r '.[].login')
-          echo "::set-output name=collaborators::$collaborators"
-
-      - name: Select random reviewer
-        id: random_reviewer
-        run: |
-          collaborators=($(echo "${{ steps.collaborators.outputs.collaborators }}" | tr -d '"'))
-          random_index=$((RANDOM % ${#collaborators[@]}))
-          random_reviewer=${collaborators[$random_index]}
-          echo "::set-output name=random_reviewer::$random_reviewer"
-
-      - name: Assign Random Reviewer
-        run: |
-          gh pr request-review --reviewer ${{ steps.random_reviewer.outputs.random_reviewer }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       - name: Asignar Revisores
+        uses: reviewdog/action-github-pr-review@v1
+        with:
+          github_token: ${{ secrets.REPO_TOKEN }}
+          level: info
+          tool_name: assign-reviewer
+          check_name: Assign Reviewer
+          reviewdog_flags: -assign "Maik2805"
