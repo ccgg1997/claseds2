@@ -35,7 +35,38 @@ jobs:
             echo "**Validation failed. Skipping PR creation and reviewer assignment.**"
             exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
           fi
-          
+
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v3
+      #   with:
+      #     token: ${{ secrets.REPO_TOKEN }}
+      #     commit-message: "Automatically created pull request"
+      #     title: "Automated Pull Request"
+      #     body: "This pull request was automatically created upon pushing changes to the repository."
+      #     branch: main
+      #     base: develop
+      # - name: Create Pull Request
+      #   uses: actions/github-script@v6  # Use v6 for better compatibility
+      #   with:
+      #     github-token: ${{ secrets.REPO_TOKEN }}
+      #     script: |
+      #       const ghb = require('@actions/github');
+      #       const { owner, repo } = context.repo;  # Correctly access context
+      #       const octokit = ghb.getOctokit(process.env.REPO_TOKEN);
+      #       try {
+      #         const pullRequest = await octokit.rest.pulls.create({
+      #           owner,
+      #           repo,
+      #           title: "Automated Pull Request",
+      #           body: "This pull request was automatically created upon pushing changes to the repository.",
+      #           head: "develop",
+      #           base: "main"
+      #         });
+      #         console.log(`Pull request created: ${pullRequest.data.html_url}`);
+      #       } catch (error) {
+      #         console.error('Error creating pull request:', error);
+      #         // Add more robust error handling if needed
+      #       }
       - name: Crear Pull Request
         id: create_pr
         uses: octokit/request-action@v2.x
