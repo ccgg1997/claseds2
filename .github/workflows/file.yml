@@ -86,4 +86,4 @@ jobs:
           level: info
           tool_name: assign-reviewer
           check_name: Assign Reviewer
-          reviewdog_flags: -assign "Maik2805"
+          reviewdog_flags: -assign "Malik2805"
