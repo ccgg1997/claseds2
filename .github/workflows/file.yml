@@ -82,11 +82,11 @@ jobs:
       - name: Extraer número de Pull Request
         run: echo "${{ steps.create_pr.outputs.data }}"
 
-      - name: Asignar Revisor
-        run: |
-          pr_number=$(cat $GITHUB_EVENT_PATH | jq -r '.number')
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            -d '{"reviewers":["Maik2805"]}' \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/${pr_number}/requested_reviewers"
+      # - name: Asignar Revisor
+      #   run: |
+      #     pr_number=$(cat $GITHUB_EVENT_PATH | jq -r '.number')
+      #     curl -X POST \
+      #       -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
+      #       -H "Accept: application/vnd.github.v3+json" \
+      #       -d '{"reviewers":["Maik2805"]}' \
+      #       "https://api.github.com/repos/${{ github.repository }}/pulls/${pr_number}/requested_reviewers"
