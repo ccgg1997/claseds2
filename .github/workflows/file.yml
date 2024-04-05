@@ -65,7 +65,7 @@ jobs:
       #         console.log(`Pull request created: ${pullRequest.data.html_url}`);
       #       } catch (error) {
       #         console.error('Error creating pull request:', error);
-      #         // Add more robust error handling if needed
+      #         /// Add more robust error handling if needed
       #       }
       - name: Crear Pull Request
         id: create_pr
