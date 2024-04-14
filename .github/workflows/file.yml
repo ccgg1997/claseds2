@@ -48,7 +48,7 @@ jobs:
 
       - name: Assign Random Reviewer
         run: |
-          latest_pr_number=$(gh pr list -L 1 | awk 'NR==2{print $1}')
+          latest_pr_number=$(gh pr list | head -n 1 | awk '{print $1}')
           echo "EL ULTIMO PR ES: $latest_pr_number"
           reviewers=("Maik2805") # Lista de nombres de usuario de revisores
           random_reviewer=${reviewers[0]}
