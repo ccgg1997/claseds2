@@ -42,8 +42,8 @@ jobs:
           commit-message: update cgchange
           title: auto hcange
           body: Update changelog to reflect release changes
-          branch: develop
-          base: main
+          branch: main
+          base: develop
 
 
       # - name: Asignar Revisor
