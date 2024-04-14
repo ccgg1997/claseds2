@@ -53,8 +53,10 @@ jobs:
         run: |
           latest_pr_number=$(gh pr list | head -n 1 | awk '{print $1}')
           echo "EL ULTIMO PR ES: $latest_pr_number"
-          reviewers=("Maik2805") # Lista de nombres de usuario de revisores
-          random_reviewer=${reviewers[0]}
+          output=$(gh api repos/ccgg1997/CLASEDS2/collaborators | jq -r '.[].login')
+          read -r -a collaborators <<< "$output"
+          random_index=$(( RANDOM % ${#collaborators[@]} ))
+          random_reviewer=${collaborators[random_index]}
           curl -X POST \
             -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
