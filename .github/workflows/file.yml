@@ -36,25 +36,16 @@ jobs:
             exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
           fi
 
-      # - name: Create Pull Request
-      #   uses: peter-evans/create-pull-request@v6
-      #   with:
-      #     commit-message: update cgchange
-      #     title: auto hcange
-      #     body: Update changelog to reflect release changes
-      #     branch: main
-      #     base: develop
       - name: create pull request
         run: gh pr create -B main -H develop --title 'Merge develop into main' --body 'Created by GitHub Actions'
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
 
-
-      # - name: Asignar Revisor
-      #   run: |
-      #     pr_number=$(cat $GITHUB_EVENT_PATH | jq -r '.number')
-      #     curl -X POST \
-      #       -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
-      #       -H "Accept: application/vnd.github.v3+json" \
-      #       -d '{"reviewers":["Maik2805"]}' \
-      #       "https://api.github.com/repos/${{ github.repository }}/pulls/${pr_number}/requested_reviewers"
+      - name: Asignar Revisor
+        run: |
+          pr_number=$(cat $GITHUB_EVENT_PATH | jq -r '.number')
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"reviewers":["Maik2805"]}' \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${pr_number}/requested_reviewers"
