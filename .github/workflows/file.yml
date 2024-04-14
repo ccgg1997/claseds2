@@ -36,14 +36,23 @@ jobs:
             exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
           fi
 
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v6
+      #   with:
+      #     commit-message: update cgchange
+      #     title: auto hcange
+      #     body: Update changelog to reflect release changes
+      #     branch: main
+      #     base: develop
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: update cgchange
-          title: auto hcange
-          body: Update changelog to reflect release changes
+          commit-message: Update changes
+          title: Automatically create pull request
+          body: This pull request was automatically created.
           branch: develop
           base: main
+          token: ${{ secrets.REPO_TOKEN }
 
 
       # - name: Asignar Revisor
