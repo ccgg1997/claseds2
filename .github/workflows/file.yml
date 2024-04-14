@@ -59,7 +59,7 @@ jobs:
             -d "{\"state\":\"closed\",\"body\":\"$description\"}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}"
     
-            ## This is the code that that we use to practice, to run a script and create pr       
+    ## This is the code that that we use to practice, to run a script and create pr       
     # - name: Setup python
       #   uses: actions/setup-python@v5
       #   with:
