@@ -28,35 +28,7 @@ jobs:
 
       - name: Build front-end
         run: npm run build
-
-      ##para correr un script con python
-      # - name: Setup python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.12'
-
-      # - name: Validate file creation
-      #   run: |
-      #     python ./example.py
-      #     if [ -f "file.txt" ]; then
-      #       echo "file.txt exists"
-      #     else
-      #       echo "file.txt does not exist"
-      #       echo "**Validation failed. Skipping PR creation and reviewer assignment.**"
-      #       exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
-      #     fi
-
-      # - name: create pull request
-      #   run: |
-      #     pr_number=$(gh pr create -B main -H develop --title 'Merge develop into main' --body 'Created by GitHub Actions'| grep -oP '\/pull\/(\d+)'| sed 's/\/pull\///'); echo "PR number is $pr_number"; echo "::set-output name=pr_number::$pr_number"
-      #     echo "::set-output name=pr_number::$pr_number"
-      #     echo "PR_NUMBER={$pr_number}" >> $GITHUB_ENV
-      #     echo "PR number at moment of create pr is $pr_number"
-      #     echo "PR number at moment of create pr is $PR_NUMBER"
-
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-
+        
       - name: Assign Random Reviewer
         run: |
           latest_pr_number=$(gh pr list | head -n 1 | awk '{print $1}')
@@ -70,3 +42,16 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             -d "{\"reviewers\":[\"$random_reviewer\"]}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${latest_pr_number}/requested_reviewers"
+
+  close-pr:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ failure() }}
+    steps:
+      - name: Close pull request
+        uses: peter-evans/close-pull-request@v2
+        with:
+          message: "Automatic PR close due to build failure."
+          comment: "The pull request was automatically closed because the build failed."
+          labels: "automatically-closed"
+          repo-token: ${{ secrets.REPO_TOKEN}}
