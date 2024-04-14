@@ -3,7 +3,7 @@ name: file
 on:
   pull_request:
     branches:
-      - '*'
+      - 'develop'
 
 jobs:
   build:
@@ -17,17 +17,18 @@ jobs:
       REPO: ${{ github.event.repository.name }}
       PR_NUMBER: ''
       GH_TOKEN: ${{ secrets.REPO_TOKEN }}
-      
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install || exit 1
 
       - name: Build front-end
-        run: npm run build
+        run: |
+          npm run build || exit 1
         
       - name: Assign Random Reviewer
         run: |
@@ -54,4 +55,4 @@ jobs:
           message: "Automatic PR close due to build failure."
           comment: "The pull request was automatically closed because the build failed."
           labels: "automatically-closed"
-          repo-token: ${{ secrets.REPO_TOKEN}}
+          repo-token: ${{ secrets.REPO_TOKEN }}
