@@ -44,15 +44,10 @@ jobs:
       #     body: Update changelog to reflect release changes
       #     branch: main
       #     base: develop
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          commit-message: Update changes
-          title: Automatically create pull request
-          body: This pull request was automatically created.
-          branch: develop
-          base: main
-          token: ${{ secrets.REPO_TOKEN }}
+      - name: create pull request
+        run: gh pr create -B base_branch -H branch_to_merge --title 'Merge branch_to_merge into base_branch' --body 'Created by Github action'
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
 
 
       # - name: Asignar Revisor
