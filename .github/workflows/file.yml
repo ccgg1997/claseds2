@@ -16,6 +16,7 @@ jobs:
       OWNER: ${{ github.repository_owner }}
       REPO: ${{ github.event.repository.name }}
       PR_NUMBER: ''
+      GH_TOKEN: ${{ secrets.REPO_TOKEN }}
       
 
     steps:
@@ -42,7 +43,7 @@ jobs:
         run: |
           pr_number=$(gh pr create -B main -H develop --title 'Merge develop into main' --body 'Created by GitHub Actions'| grep -oP '\/pull\/(\d+)'| sed 's/\/pull\///'); echo "PR number is $pr_number"; echo "::set-output name=pr_number::$pr_number"
           echo "::set-output name=pr_number::$pr_number"
-          echo "PR_NUMBER=62" >> $GITHUB_ENV
+          echo "PR_NUMBER={$pr_number}" >> $GITHUB_ENV
           echo "PR number at moment of create pr is $pr_number"
           echo "PR number at moment of create pr is $PR_NUMBER"
 
