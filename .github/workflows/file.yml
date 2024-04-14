@@ -52,7 +52,7 @@ jobs:
           body: This pull request was automatically created.
           branch: develop
           base: main
-          token: ${{ secrets.REPO_TOKEN }
+          token: ${{ secrets.REPO_TOKEN }}
 
 
       # - name: Asignar Revisor
