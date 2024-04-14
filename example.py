@@ -8,5 +8,5 @@ with open("file"".txt", "w") as file:
     for i in range(10):
         #create a file and write to it
         print("hello world4x")
-        print("hello world45")
+        print("hello world45x")
         file.write("This is line %d\n" % (i+1))
