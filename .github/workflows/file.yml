@@ -3,7 +3,7 @@ name: file
 on:
   pull_request:
     branches:
-      - 'develop'
+      - '*'
 
 jobs:
   build:
@@ -50,14 +50,16 @@ jobs:
     if: ${{ failure() }}
     steps:
       - name: Close pull request
-        uses: peter-evans/close-pull-request@v2
-        with:
-          message: "Automatic PR close due to build failure."
-          comment: "The pull request was automatically closed because the build failed."
-          labels: "automatically-closed"
-          repo-token: ${{ secrets.REPO_TOKEN }}
+        run: |
+          echo "Closing pull request due to build failure..."
+          curl -X PATCH \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"state":"closed"}' \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}"
 
-          ## This is the code that that we use to practice, to run a script and create pr       
+
+    ## This is the code that that we use to practice, to run a script and create pr       
     # - name: Setup python
       #   uses: actions/setup-python@v5
       #   with:
