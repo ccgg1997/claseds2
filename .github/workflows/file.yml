@@ -56,10 +56,8 @@ jobs:
           comment: "The pull request was automatically closed because the build failed."
           labels: "automatically-closed"
           repo-token: ${{ secrets.REPO_TOKEN }}
-          repo-token: ${{ secrets.REPO_TOKEN}}
 
-
-  ## This is the code that that we use to practice, to run a script and create pr       
+          ## This is the code that that we use to practice, to run a script and create pr       
     # - name: Setup python
       #   uses: actions/setup-python@v5
       #   with:
