@@ -39,16 +39,17 @@ jobs:
           fi
 
       - name: create pull request
-        run: 
+        run: |
           pr_number=$(gh pr create -B main -H develop --title 'Merge develop into main' --body 'Created by GitHub Actions' | grep -oP '(?<=#)\d+')
           echo "::set-output name=pr_number::$pr_number"
-          echo "PR_NUMBER=$pr_number" >> $GITHUB_ENV
+          echo "Pull Request number: $pr_number"
+
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
 
       - name: Asignar Revisor
         run: |
-          pr_number=$PR_NUMBER
+          pr_number=${{ steps.create_pr.outputs.pr_number }}
           curl -X POST \
             -H "Authorization: token ${{ secrets.REPO_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
