@@ -36,21 +36,6 @@ jobs:
             exit 1  # Use a non-zero exit code to indicate failure, but don't prevent the push
           fi
 
-      # - name: Crear Pull Request
-      #   id: create_pr
-      #   uses: octokit/request-action@v2.x
-      #   with:
-      #     route: POST /repos/${{ env.OWNER }}/${{ env.REPO }}/pulls
-      #     token: ${{ secrets.REPO_TOKEN }}
-      #     title: Automated Pull Request
-      #     head: develop
-      #     base: main
-      #     body: |
-      #       This pull request was automatically created upon pushing changes to the repository.
-
-      # - name: Extraer número de Pull Request
-      #   run: echo "${{ steps.create_pr.outputs.data }}"
-
       - name: Update AUTHORS
         run: |
           git log --format='%aN <%aE>%n%cN <%cE>' | sort -u > AUTHORS
